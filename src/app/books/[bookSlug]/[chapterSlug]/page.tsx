@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { fetchBook, fetchBooks } from "@/lib/github";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, BookOpen } from "lucide-react";
-import TableOfContents from "./table-of-contents";
+import TableOfContents from "./_components/table-of-contents";
 
 export async function generateStaticParams() {
   // すべての本を取得
