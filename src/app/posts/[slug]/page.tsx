@@ -2,6 +2,7 @@ import Link from "next/link";
 import { fetchArticles } from "@/lib/github";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { checkAccessAndRedirect } from "@/lib/supabase/utils";
 
 // ビルド時に動的なページを生成
 export async function generateStaticParams() {
@@ -29,6 +30,10 @@ export default async function PostDetailPage({ params }: PostDetailPageProps) {
         </Link>
       </div>
     );
+  }
+
+  if (post.isPaid) {
+    await checkAccessAndRedirect(post.id, "article");
   }
 
   return (
