@@ -1,6 +1,10 @@
 import { redirect } from "next/navigation";
 import { auth } from "../../../auth";
 import { supabaseAdmin } from "./client";
+import {
+  hasPurchasedContent,
+  setPurchasedContent,
+} from "../../../e2e/mocks/supabase";
 
 interface CreatePurchaseParams {
   userIdentifier: string;
@@ -8,6 +12,10 @@ interface CreatePurchaseParams {
   paymentIntentId: string;
   amount: number;
 }
+
+// テスト環境かどうかを判定
+const isTestEnv =
+  process.env.APP_ENV === "test" || process.env.NODE_ENV === "test";
 
 /**
  * 購入履歴を記録する
@@ -18,6 +26,22 @@ export async function createPurchaseRecord({
   paymentIntentId,
   amount,
 }: CreatePurchaseParams) {
+  // テスト環境ではモックを使用
+  if (isTestEnv) {
+    // モックデータを更新
+    setPurchasedContent(userIdentifier, contentId);
+
+    // モックデータを返す
+    return {
+      id: "mock-purchase-id",
+      user_identifier: userIdentifier,
+      content_id: contentId,
+      stripe_payment_intent_id: paymentIntentId,
+      amount,
+      created_at: new Date().toISOString(),
+    };
+  }
+
   const { data, error } = await supabaseAdmin
     .from("purchases")
     .insert({
@@ -44,6 +68,11 @@ export async function checkUserPurchase(
   userIdentifier: string,
   contentId: string
 ) {
+  // テスト環境ではモックを使用
+  if (isTestEnv) {
+    return hasPurchasedContent(userIdentifier, contentId);
+  }
+
   try {
     const { data } = await supabaseAdmin
       .from("purchases")
