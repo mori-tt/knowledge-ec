@@ -5,7 +5,7 @@
       "value": "dummy",
       "domain": "localhost",
       "path": "/",
-      "expires": 1742202030,
+      "expires": 1742202457,
       "httpOnly": true,
       "secure": false,
       "sameSite": "Lax"
